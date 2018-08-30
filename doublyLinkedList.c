@@ -1,136 +1,113 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct node{
+struct node{//declaration of node
     int data;
-    struct node *link;
-}*head=NULL;
-
-
-void display(){
-    struct node *q;
-    printf("\nthe linked list is:\n" );
-    for(q=head;q!=NULL;q=q->link)
+    struct node *next,*prev;
+};
+void addf(int x,struct node **head){//function to add node at 1st position
+    struct node *newnode;
+    newnode=(struct node *)malloc(sizeof(struct node));
+    newnode->data=x;
+    newnode->next=*head;
+    (*head)->prev=newnode;
+    *head=newnode;
+    //display(*head);
+}
+void disprev(struct node *q){//function to display linked list in reverse order
+    printf("\nthe nexted list in reverse order is:\n" );
+    for(;q->next!=NULL;q=q->next);
+    for(;q!=NULL;q=q->prev)
         printf("%d\n",q->data );
     printf("\n" );
 }
-
-void append(int x){
+void display(struct node *q){//function to display elements of linked list
+    //struct node *q;
+    printf("\nthe nexted list is:\n" );
+    for(;q!=NULL;q=q->next)
+        printf("%d\n",q->data );
+    printf("\n" );
+}
+void append(int x,struct node **head){//function to add node at the end
     struct node *p ,*q;
     q=(struct node *)malloc(sizeof(struct node));
-    if(head==NULL)
-        head=q;
+    if(*head==NULL){
+        //printf("hello\n" );
+
+        *head=q;}
     else{
-        for(p=head;p->link!=NULL;p=p->link);
-        p->link=q;
+        for(p=*head;p->next!=NULL;p=p->next);
+        p->next=q;
 
     }
     q->data=x;
-    q->link=NULL;
-//    display();
+    q->next=NULL;
+    q->prev=p;
+    //display(*head);
 }
 
-int size(){
+int size(struct node *head){//returns size of the linked list
     int i=0;
     struct node *p;
-    for(p=head;p!=NULL;p=p->link,i++);
+    for(p=head;p!=NULL;p=p->next,i++);
     return i;
 
 }
-
-void addm(int pos,int x){
+void addm(int pos,int x,struct node **head){//adds node after nth position
     int i;
     struct node *p,*newnode;
     newnode=(struct node *)malloc(sizeof(struct node));
     newnode->data=x;
-    pos--;
-//printf("%d\n",size() );
-    if(pos>size()){
+//    pos--;
+    if(pos>size(*head)){
         printf("link list too small\n" );
         return;
     }
-    for (i=1,p=head;i<pos;i++,p=p->link);
-    newnode->link=p->link;
-    p->link=newnode;
-//    display();
+
+    for (i=1,p=*head;i<pos;i++,p=p->next);
+    newnode->next=p->next;
+    newnode->prev=p;
+    p->next->prev=newnode;
+    p->next=newnode;
+
+    //display(*head);
 
 
 }
+void delete(int val,struct node **head) {//function to delete node containing value =val
+    struct node *temp,*q=*head;
+    while(q!=NULL){
+        if(q->data==val){
+            temp=q;
+            if(q==*head){
+                q->next->prev=NULL;
+            }
+            else if(q->next==NULL){
+                q->prev->next=NULL;
+            }
+            else{
+                q->next->prev=q->next;
+                q->prev->next=q->prev;
+            }
+            free(temp);
 
-void addb4(int pos,int value){
-    int i;
-    struct node *newnode,*p;
-    newnode=(struct node *)malloc(sizeof(struct node));
-    newnode->data=value;
-    if(pos>size())
-    {   printf("link list too small\n" );
-        return;
-    }
-    pos=size()-pos;
-    for (i=0,p=head;i<pos;i++,p=p->link);
-    newnode->link=p->link;
-    p->link=newnode;
-//    display();
-}
-
-void deletep(int pos){
-    int i;
-    struct node *p,*q;
-    if(pos>size()){
-        printf("no position avalible\n" );
-        return;
-    }
-    if(pos==1) {
-        p=head;
-        head=p->link;
-        free(p);
-//        display();
-        return;
-    }
-
-
-    for (i=1,p=head;i<pos-1 && p!=NULL;i++,p=p->link);
-    //printf("%d\n",i );
-    q=p->link;
-    p->link=q->link;
-    free(q);
-//    display();
-}
-
-void  deletev(int val) {
-    struct node *p,*q;
-    while (head->data==val) {
-        p=head;
-        head=p->link;
-        free(p);}
-    for(p=head;p->link!=NULL;p=p->link){
-        if(p->link->data==val){
-            q=p->link;
-            p->link=q->link;
-            free(q);
         }
+        q=q->next;
     }
-//    display();
-
 }
 
-void addf(int x){
-    struct node *newnode;
-    newnode=(struct node *)malloc(sizeof(struct node));
-    newnode->data=x;
-    newnode->link=head;
-    head=newnode;
-//    display();
-}
- int main(int argc, char const *argv[]) {
-
-append(1);
-addf(2);
-addm(2,3);
-addb4(2,4);
-display();
-deletev(2);
-display();
-deletep(1);
-display();
+int main(int argc, char const *argv[]) {
+    struct node *head;
+    head=NULL;
+    append(20,&head);
+    append(30,&head);
+    display(head);
+    addf(10,&head);
+    display(head);
+    disprev(head);
+    addm(2,5,&head);
+    disprev(head);
+    delete(30,&head);
+    disprev(head);
+    return 0;
 }
