@@ -5,7 +5,7 @@ struct queue{
 };
 
 void add(struct queue *q,int n){
-    if((q->front==(q->rear+1)%n)){
+    if((q->front==(q->rear+1)%MAX)){
         printf("queue full\n" );
         return;
     }

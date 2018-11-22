@@ -23,7 +23,7 @@ void input(struct str *arr){//utility function to read array
 int main(int argc, char const *argv[]) {//main driver function
     struct str a;
     int x;
-    printf("%d\n",1>2 );
+//    printf("%d\n",1>2 );
     input(&a);
     printf("enter a no\n" );
     scanf("%d",&x );
